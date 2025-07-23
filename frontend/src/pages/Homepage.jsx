@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import NoteCard from "../components/NoteCard/NoteCard";
 import api from "../lib/axios.js";
+import NotesNotFound from "../components/NotesNotFound/NotesNotFound.jsx";
 
 export const Homepage = () => {
   const [rateLimited, setRateLimited] = useState(false);
@@ -50,6 +51,7 @@ export const Homepage = () => {
             })}
           </div>
         )}
+        {!loading && !rateLimited && notes.length === 0 && <NotesNotFound />}
       </div>
     </div>
   );
