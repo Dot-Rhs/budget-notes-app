@@ -1,5 +1,8 @@
 {
   "name": "budget-notes-app",
+    "engines": {
+    "node": "22.x"
+  },
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
