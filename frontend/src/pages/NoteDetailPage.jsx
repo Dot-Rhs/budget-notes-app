@@ -19,12 +19,13 @@ const NoteDetailPage = () => {
 
   const handleOpenModal = (e) => {
     e.preventDefault();
-    setModalContent({
+    setModalContent((prev) => ({
+      ...prev,
       open: true,
       id: "delete-note-modal",
       header: "Delete Note",
       body: <ModalDeleteContent callback={handleDelete} />,
-    });
+    }));
   };
 
   const handleDelete = async () => {
@@ -36,32 +37,6 @@ const NoteDetailPage = () => {
     } catch (error) {
       console.log("Error deleting note: ", error);
       toast.error("Error deleting note, please try again");
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!note.title.trim() || !note.content.trim()) {
-      toast.error("All fields are required");
-      return;
-    }
-
-    setSaving(true);
-
-    try {
-      await api.put(`/notes/${id}`, {
-        title: note.title,
-        content: note.content,
-      });
-
-      toast.success("Note updated!");
-      navigate("/");
-    } catch (error) {
-      console.log("Error updating note: ", error);
-      toast.error("Error updating note, please try again later");
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -94,7 +69,10 @@ const NoteDetailPage = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <Link to="/" className="btn btn-ghost group hover:bg-primary/50">
+            <Link
+              to="/"
+              className="btn btn-ghost group hover:bg-primary hover:text-base-100 tracking-wide"
+            >
               <ArrowLeftIcon className="h-5 w-5" />
               Back to Notes
             </Link>
@@ -102,8 +80,10 @@ const NoteDetailPage = () => {
               onClick={handleOpenModal}
               className="group btn btn-error btn-outline"
             >
-              <Trash2Icon className="h-5 w-5 group-hover:text-black/70" />
-              <p className="group-hover:text-black/70">Delete Note</p>
+              <Trash2Icon className="h-5 w-5 group-hover:text-base-100" />
+              <p className="group-hover:text-base-100 tracking-wide">
+                Delete Note
+              </p>
             </button>
           </div>
           <NoteForm id={id} currentNote={note} />

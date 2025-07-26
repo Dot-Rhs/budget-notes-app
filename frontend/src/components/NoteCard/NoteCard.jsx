@@ -28,12 +28,13 @@ const NoteCard = ({ note, setNotes }) => {
   const handleModal = (e) => {
     e.preventDefault();
 
-    setModalContent({
+    setModalContent((prev) => ({
+      ...prev,
       open: true,
       id: "delete-note-modal",
       header: "Delete Note",
       body: <ModalDeleteContent callback={() => handleDelete(note._id)} />,
-    });
+    }));
   };
 
   return (

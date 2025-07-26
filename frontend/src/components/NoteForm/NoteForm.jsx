@@ -80,7 +80,7 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
               id="note-title-input"
               type="text"
               placeholder="Note Title"
-              className="input input-bordered focus-visible:outline-primary focus-visible:border-primary"
+              className="input input-bordered rounded-md"
               value={note.title}
               onChange={(e) =>
                 setNote((prev) => ({ ...prev, title: e.target.value }))
@@ -95,7 +95,7 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
               id="note-content-input"
               type="text"
               placeholder="Your note goes here..."
-              className="text-area text-area-bordered h-32 p-2 focus-visible:outline-primary"
+              className="textarea textarea-bordered h-32 p-2 rounded-md"
               value={note.content}
               onChange={(e) =>
                 setNote((prev) => ({ ...prev, content: e.target.value }))

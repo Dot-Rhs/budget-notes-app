@@ -6,10 +6,10 @@ const ModalDeleteContent = ({ callback }) => {
 
   return (
     <div className="flex items-center flex-col justify-center">
-      <p className="text-xl">You really wanna do this?</p>
+      <p className="text-xl tracking-widest">You really wanna do this?</p>
       <span className="card-actions mt-4">
         <button
-          className="btn btn-error btn-square min-w-40 rounded-none "
+          className="btn btn-error text-base-100 tracking-wider"
           onClick={() => {
             callback();
             setModalContent((prev) => ({ ...prev, open: false }));
@@ -18,7 +18,7 @@ const ModalDeleteContent = ({ callback }) => {
           Delete
         </button>
         <button
-          className="btn btn-primary bg-current/95"
+          className="btn btn-ghost hover:bg-primary hover:text-base-100"
           onClick={() => {
             setModalContent((prev) => ({ ...prev, open: false }));
           }}

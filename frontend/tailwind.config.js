@@ -11,7 +11,7 @@ export default {
       keyframes: {
         modal: {
           from: {
-            top: "-200px",
+            top: "-400px",
             opacity: "0",
           },
           to: {
