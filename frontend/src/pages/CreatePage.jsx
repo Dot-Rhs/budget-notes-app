@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router";
 import api from "../lib/axios.js";
+import NoteForm from "../components/NoteForm/NoteForm.jsx";
 
 const CreatePage = () => {
   const [title, setTitle] = useState("");
@@ -53,15 +54,17 @@ const CreatePage = () => {
             <ArrowLeftIcon className="size-5" />
             Back to Notes
           </Link>
-          <div className="card bg-base-100">
+          <NoteForm />
+          {/* <div className="card bg-base-100">
             <div className="card-body">
               <h2 className="card-title text-2xl mb-4">Create New Note</h2>
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={handleSubmit} id="note-form">
                 <div className="form-control mb-4">
-                  <label className="label">
+                  <label className="label" for="note-title-input">
                     <span className="label-text">Title</span>
                   </label>
                   <input
+                    id="note-title-input"
                     type="text"
                     placeholder="Note Title"
                     className="input input-bordered"
@@ -70,10 +73,11 @@ const CreatePage = () => {
                   />
                 </div>
                 <div className="form-control mb-4">
-                  <label className="label">
+                  <label className="label" for="note-content-input">
                     <span className="label-text">Content</span>
                   </label>
                   <textarea
+                    id="note-content-input"
                     type="text"
                     placeholder="Your note goes here..."
                     className="text-area text-area-bordered h-32"
@@ -92,7 +96,7 @@ const CreatePage = () => {
                 </div>
               </form>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -13,7 +13,7 @@ const NotesNotFound = () => {
         You can create a note by clicking below, all your notes will be
         displayed here.
       </p>
-      <Link to={"/create"} className="btn btn-primary">
+      <Link to={"/create"} className="btn btn-primary z-10">
         Create A Note
       </Link>
     </div>

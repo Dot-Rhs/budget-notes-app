@@ -1,20 +1,33 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import api from "../lib/axios";
 import toast from "react-hot-toast";
 import { ArrowLeftIcon, LoaderIcon, Trash2Icon } from "lucide-react";
+import GlobalContext from "../context/context";
+import ModalDeleteContent from "../components/Modal/ModalContent";
+import NoteForm from "../components/NoteForm/NoteForm";
 
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
+  const { setModalContent } = useContext(GlobalContext);
+
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const handleDelete = async () => {
-    if (!window.confirm("You ultra sure?")) return;
+  const handleOpenModal = (e) => {
+    e.preventDefault();
+    setModalContent({
+      open: true,
+      id: "delete-note-modal",
+      header: "Delete Note",
+      body: <ModalDeleteContent callback={handleDelete} />,
+    });
+  };
 
+  const handleDelete = async () => {
     try {
       await api.delete(`/notes/${id}`);
 
@@ -81,61 +94,19 @@ const NoteDetailPage = () => {
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-6">
-            <Link to="/" className="btn btn-ghost">
+            <Link to="/" className="btn btn-ghost group hover:bg-primary/50">
               <ArrowLeftIcon className="h-5 w-5" />
               Back to Notes
             </Link>
             <button
-              onClick={handleDelete}
-              className="btn btn-error btn-outline"
+              onClick={handleOpenModal}
+              className="group btn btn-error btn-outline"
             >
-              <Trash2Icon className="h-5 w-5" />
-              Delete Note
+              <Trash2Icon className="h-5 w-5 group-hover:text-black/70" />
+              <p className="group-hover:text-black/70">Delete Note</p>
             </button>
           </div>
-          <div className="card bg-base-100">
-            <div className="card-body">
-              <form onSubmit={handleSubmit}>
-                <div className="form-control mb-4">
-                  <label className="label">
-                    <span className="label-text">Title</span>
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Note Title"
-                    className="input input-bordered"
-                    value={note.title}
-                    onChange={(e) =>
-                      setNote((prev) => ({ ...prev, title: e.target.value }))
-                    }
-                  />
-                </div>
-                <div className="form-control mb-4">
-                  <label className="label">
-                    <span className="label-text">Content</span>
-                  </label>
-                  <textarea
-                    type="text"
-                    placeholder="Your note goes here..."
-                    className="text-area text-area-bordered h-32"
-                    value={note.content}
-                    onChange={(e) =>
-                      setNote((prev) => ({ ...prev, content: e.target.value }))
-                    }
-                  />
-                </div>
-                <div className="card-actions justify-end">
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={loading}
-                  >
-                    {loading ? "Saving Note..." : "Save Note"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+          <NoteForm id={id} currentNote={note} />
         </div>
       </div>
     </div>
