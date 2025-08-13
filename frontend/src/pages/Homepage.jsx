@@ -34,7 +34,7 @@ export const Homepage = () => {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div>
       <Navbar />
       {rateLimited && <RateLimitedUI />}
 

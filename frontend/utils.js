@@ -22,8 +22,6 @@ export const loadSprite = async (path) => {
 };
 
 export const makeSprite = (ctx, sprite, pos, scale = 1) => {
-  console.log("SPROTE::: ", sprite.src);
-
   return {
     width: sprite.width,
     height: sprite.height,
