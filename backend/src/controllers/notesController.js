@@ -1,4 +1,5 @@
 import Note from "../model/Note.js";
+import User from "../model/User.js";
 
 export const getAllNotes = async (_, res) => {
   try {
@@ -6,6 +7,31 @@ export const getAllNotes = async (_, res) => {
     res.status(200).json(notes);
   } catch (e) {
     console.error("Error in getAllNotes: ", e);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const getAllUserNotes = async (_, res) => {
+  try {
+    const user = await User.find().sort({ createdAt: -1 });
+    res.status(200);
+    console.log(user);
+    // .json(user);
+  } catch (e) {
+    console.error("Error in getAllUserNotes: ", e);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const createUserNote = async (req, res) => {
+  try {
+    const { userId, content, title } = req.body;
+    const newNote = new User({ userId, notes: [new Note({ title, content })] });
+
+    await newNote.save();
+    res.status(201).json({ message: "User Note created!" });
+  } catch (e) {
+    console.error("Error in createUserNote: ", e);
     res.status(500).json({ message: "Internal server error" });
   }
 };

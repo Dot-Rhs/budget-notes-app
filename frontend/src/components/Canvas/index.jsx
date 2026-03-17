@@ -6,7 +6,7 @@ import {
   makeInfiniteScroll,
 } from "../../lib/utils.js";
 
-const Canvas = ({ children }) => {
+const Canvas = () => {
   const [width, setWidth] = useState(0);
   const [height, setHeight] = useState(0);
   const canvasRef = useRef(null);
@@ -14,7 +14,7 @@ const Canvas = ({ children }) => {
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
 
-    new ResizeObserver((entries) => {
+    new ResizeObserver(() => {
       setHeight(() => canvas.parentElement.clientHeight);
       // setWidth(() => entry.contentRect.width  );
       setWidth(() => canvas.parentElement.clientWidth);
