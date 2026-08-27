@@ -56,7 +56,7 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
     setSaving(true);
 
     try {
-      await api.put(`/notes/${id}`, {
+      await api.put(`/notes/${user.sub}/${id}`, {
         title: note.title,
         content: note.content,
       });
