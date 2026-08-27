@@ -1,18 +1,16 @@
 import mongoose, { Schema } from "mongoose";
-import Note from "./Note.js";
+import Note, { noteSchema } from "./Note.js";
 
-const userSchema = new mongoose.Schema({
-  userId: {
-    type: String,
-    require: true,
-  },
-  notes: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Note",
+const userSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+      required: true,
     },
-  ],
-});
+    notes: [noteSchema],
+  },
+  { timestamps: true },
+);
 
 const User = mongoose.model("User", userSchema);
 

@@ -15,32 +15,44 @@ export const Homepage = () => {
   const [rateLimited, setRateLimited] = useState(false);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { isAuthenticated } = useAuth0();
-
+  const { isAuthenticated, user, authLoading } = useAuth0();
   useEffect(() => {
     setLoading(true);
 
-    const fetchNotes = async () => {
-      try {
-        const res = await api.get("/notes");
+    if (!isAuthenticated || !user) {
+      setLoading(false);
+      return;
+    }
 
-        setNotes(res.data);
-        setRateLimited(false);
-      } catch (error) {
-        console.log("Error fetching notes: ", error);
-        if (error.response?.status === 429) setRateLimited(true);
-        else toast.error("Error fetching notes, please try again later");
-      } finally {
-        setLoading(false);
+    const fetchNotes = async () => {
+      if (isAuthenticated) {
+        try {
+          const res = await api.get(`/notes/${user?.sub}`);
+
+          console.log("JOHN::: ", res.data, user?.sub);
+          setNotes(res.data);
+          setRateLimited(false);
+        } catch (error) {
+          console.log("Error fetching notes: ", error);
+          if (error.response?.status === 429) setRateLimited(true);
+          else toast.error("Error fetching notes, please try again later");
+        } finally {
+          setLoading(false);
+        }
       }
     };
 
     fetchNotes();
-  }, []);
+  }, [isAuthenticated, user]);
 
   return (
     <div>
       {/* <Navbar /> */}
+      {authLoading && (
+        <div className="text-center text-primary py-10">
+          Checking for active session...
+        </div>
+      )}
       {isAuthenticated ? (
         <>
           {rateLimited && <RateLimitedUI />}
@@ -51,7 +63,7 @@ export const Homepage = () => {
                 Loading notes...
               </div>
             )}
-            {!rateLimited && notes.length > 0 && (
+            {!rateLimited && notes?.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {notes.map((note) => {
                   return (
@@ -60,7 +72,7 @@ export const Homepage = () => {
                 })}
               </div>
             )}
-            {!loading && !rateLimited && notes.length === 0 && (
+            {!loading && !rateLimited && notes?.length === 0 && (
               <NotesNotFound />
             )}
           </div>
@@ -75,7 +87,7 @@ export const Homepage = () => {
             You can create a note by clicking below, all your notes will be
             displayed here.
           </p> */}
-          <LoginButton /> 
+          <LoginButton />
           <SignupButton />
         </div>
       )}

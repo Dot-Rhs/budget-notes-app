@@ -22,7 +22,7 @@ const App = () => {
         <Route path="/" element={<Homepage />} />
         <Route path="/create" element={<CreatePage />} />
         <Route path="/note/:id" element={<NoteDetailPage />} />
-        <Route path="/callback" element={<CallbackPage />} />
+        {/* <Route path="/callback" element={<CallbackPage />} /> */}
         {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>
 

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
+import { useAuth0 } from "@auth0/auth0-react";
 import api from "../../lib/axios";
 
 const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
@@ -8,6 +9,7 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
   const [saving, setSaving] = useState();
 
   const navigate = useNavigate();
+  const { user } = useAuth0();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,7 +22,8 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
     setSaving(true);
 
     try {
-      await api.post("/notes", {
+      await api.post("/notes/createUserNote", {
+        userId: user.sub, // Replace with actual user ID
         title: note.title,
         content: note.content,
       });

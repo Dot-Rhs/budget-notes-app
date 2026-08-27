@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
 
-const noteSchema = new mongoose.Schema(
+export const noteSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      require: true
+      require: true,
     },
     content: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const Note = mongoose.model("Note", noteSchema);
