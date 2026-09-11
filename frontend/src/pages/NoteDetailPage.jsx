@@ -5,13 +5,11 @@ import { ArrowLeftIcon, LoaderIcon, Trash2Icon } from "lucide-react";
 import GlobalContext from "../context/context";
 import ModalDeleteContent from "../components/Modal/ModalContent";
 import NoteForm from "../components/NoteForm/NoteForm";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useAuthenticatedApi } from "../lib/useAuthenticatedApi";
 
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { user } = useAuth0();
   const { request } = useAuthenticatedApi();
 
   const { setModalContent } = useContext(GlobalContext);
@@ -33,7 +31,7 @@ const NoteDetailPage = () => {
   const handleDelete = async () => {
     try {
       await request({
-        method: "delet",
+        method: "delete",
         url: `/notes/${id}`,
       });
 
@@ -50,7 +48,7 @@ const NoteDetailPage = () => {
       try {
         const res = await request({
           method: "get",
-          url: `/notes/${user.sub}/${id}`,
+          url: `/notes/${id}`,
         });
         console.log("NoteDetailPage: ", res.data);
         setNote(() => res.data);

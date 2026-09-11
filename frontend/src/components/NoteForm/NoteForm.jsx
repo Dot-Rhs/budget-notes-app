@@ -63,7 +63,7 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
     try {
       await request({
         method: "put",
-        url: `/notes/${user.sub}/${id}`,
+        url: `/notes/${id}`,
         data: {
           title: note.title,
           content: note.content,

@@ -3,14 +3,14 @@ import User from "../model/User.js";
 
 export const getAllNotes = async (req, res) => {
   try {
-    const notes = await User.findOne({ userId: req.params.id }).populate(
-      "notes",
-    );
+    const userId = req.auth.payload.sub;
+
+    const notes = await User.findOne({ userId }).populate("notes");
 
     if (!notes?.notes || notes?.notes?.length === 0) {
-      if (notes === null) {
-        await User.create({ userId: req.params.id }, { new: true });
-      }
+      // if (notes === null) {
+      //   await User.create({ userId: req.params.id }, { new: true });
+      // }
       return res.status(200).json([]);
     }
     console.log("hi::: ", notes);
@@ -23,9 +23,11 @@ export const getAllNotes = async (req, res) => {
 
 export const getNote = async (req, res) => {
   try {
+    const userId = req.auth.payload.sub;
+
     const notes = await User.findOne(
       {
-        userId: req.params.userId,
+        userId,
         "notes._id": req.params.id,
       },
       {
@@ -43,10 +45,11 @@ export const getNote = async (req, res) => {
 
 export const createUserNote = async (req, res) => {
   try {
-    const { userId, content, title } = req.body;
+    const { content, title } = req.body;
+    const userId = req.auth.payload.sub;
 
     const newNote = await User.findOneAndUpdate(
-      { userId: userId },
+      { userId },
       { $push: { notes: new Note({ title, content }) } },
       { new: true, upsert: true, setDefaultsOnInsert: true },
     );
@@ -79,10 +82,11 @@ export const createNote = async (req, res) => {
 export const updateNote = async (req, res) => {
   try {
     const { title, content } = req.body;
+    const userId = req.auth.payload.sub;
 
     const noteToUpdate = await User.findOneAndUpdate(
       {
-        userId: req.params.userId,
+        userId,
         "notes._id": req.params.id,
       },
       { $set: { "notes.$.title": title, "notes.$.content": content } },
@@ -102,8 +106,9 @@ export const updateNote = async (req, res) => {
 
 export const deleteNote = async (req, res) => {
   try {
+    const userId = req.auth.payload.sub;
     const noteToDelete = await User.findOneAndUpdate(
-      { userId: req.params.userId },
+      { userId },
       { $pull: { notes: { _id: req.params.id } } },
       { new: true },
     );

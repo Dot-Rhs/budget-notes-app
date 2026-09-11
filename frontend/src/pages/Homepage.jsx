@@ -30,7 +30,7 @@ export const Homepage = () => {
         try {
           const res = await request({
             method: "get",
-            url: `/notes/${user?.sub}`,
+            url: `/notes/`,
           });
 
           setNotes(res.data);
