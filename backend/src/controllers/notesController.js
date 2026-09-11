@@ -48,7 +48,7 @@ export const createUserNote = async (req, res) => {
     const newNote = await User.findOneAndUpdate(
       { userId: userId },
       { $push: { notes: new Note({ title, content }) } },
-      { new: true },
+      { new: true, upsert: true, setDefaultsOnInsert: true },
     );
 
     if (!newNote) {

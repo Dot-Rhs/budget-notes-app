@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
 import { useAuth0 } from "@auth0/auth0-react";
-import api from "../../lib/axios";
+import { useAuthenticatedApi } from "../../lib/useAuthenticatedApi";
 
 const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
   const [note, setNote] = useState(currentNote);
   const [saving, setSaving] = useState();
+  const { request } = useAuthenticatedApi();
 
   const navigate = useNavigate();
   const { user } = useAuth0();
@@ -22,10 +23,14 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
     setSaving(true);
 
     try {
-      await api.post("/notes/createUserNote", {
-        userId: user.sub, // Replace with actual user ID
-        title: note.title,
-        content: note.content,
+      await request({
+        method: "post",
+        url: "/notes/createUserNote",
+        data: {
+          userId: user.sub, // Replace with actual user ID
+          title: note.title,
+          content: note.content,
+        },
       });
 
       toast.success("Note saved!");
@@ -56,9 +61,13 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
     setSaving(true);
 
     try {
-      await api.put(`/notes/${user.sub}/${id}`, {
-        title: note.title,
-        content: note.content,
+      await request({
+        method: "put",
+        url: `/notes/${user.sub}/${id}`,
+        data: {
+          title: note.title,
+          content: note.content,
+        },
       });
 
       toast.success("Note updated!");

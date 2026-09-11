@@ -1,17 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
-import api from "../lib/axios";
 import toast from "react-hot-toast";
 import { ArrowLeftIcon, LoaderIcon, Trash2Icon } from "lucide-react";
 import GlobalContext from "../context/context";
 import ModalDeleteContent from "../components/Modal/ModalContent";
 import NoteForm from "../components/NoteForm/NoteForm";
 import { useAuth0 } from "@auth0/auth0-react";
+import { useAuthenticatedApi } from "../lib/useAuthenticatedApi";
 
 const NoteDetailPage = () => {
   const [note, setNote] = useState(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth0();
+  const { request } = useAuthenticatedApi();
 
   const { setModalContent } = useContext(GlobalContext);
 
@@ -31,7 +32,10 @@ const NoteDetailPage = () => {
 
   const handleDelete = async () => {
     try {
-      await api.delete(`/notes/${id}`);
+      await request({
+        method: "delet",
+        url: `/notes/${id}`,
+      });
 
       toast.success("Note deleted, it's gone bab!");
       navigate("/");
@@ -44,7 +48,10 @@ const NoteDetailPage = () => {
   useEffect(() => {
     const fetchNote = async () => {
       try {
-        const res = await api.get(`/notes/${user.sub}/${id}`);
+        const res = await request({
+          method: "get",
+          url: `/notes/${user.sub}/${id}`,
+        });
         console.log("NoteDetailPage: ", res.data);
         setNote(() => res.data);
       } catch (error) {

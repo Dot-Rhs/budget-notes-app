@@ -1,21 +1,22 @@
 import React, { useState } from "react";
-import Navbar from "../components/Navbar/Navbar";
 import RateLimitedUI from "../components/RateLimitedUI/RateLimitedUI";
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { NotebookIcon } from "lucide-react";
 import NoteCard from "../components/NoteCard/NoteCard";
-import api from "../lib/axios.js";
 import NotesNotFound from "../components/NotesNotFound/NotesNotFound.jsx";
 import { useAuth0 } from "@auth0/auth0-react";
 import { LoginButton } from "../components/LoginButton/LoginButton.jsx";
 import { SignupButton } from "../components/SignupButton/SignupButton.jsx";
+import { useAuthenticatedApi } from "../lib/useAuthenticatedApi";
 
 export const Homepage = () => {
   const [rateLimited, setRateLimited] = useState(false);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { isAuthenticated, user, authLoading } = useAuth0();
+  const { isAuthenticated, user, isLoading } = useAuth0();
+  const { request } = useAuthenticatedApi();
+
   useEffect(() => {
     setLoading(true);
 
@@ -27,9 +28,11 @@ export const Homepage = () => {
     const fetchNotes = async () => {
       if (isAuthenticated) {
         try {
-          const res = await api.get(`/notes/${user?.sub}`);
+          const res = await request({
+            method: "get",
+            url: `/notes/${user?.sub}`,
+          });
 
-          console.log("JOHN::: ", res.data, user?.sub);
           setNotes(res.data);
           setRateLimited(false);
         } catch (error) {
@@ -48,7 +51,7 @@ export const Homepage = () => {
   return (
     <div>
       {/* <Navbar /> */}
-      {authLoading && (
+      {isLoading && (
         <div className="text-center text-primary py-10">
           Checking for active session...
         </div>

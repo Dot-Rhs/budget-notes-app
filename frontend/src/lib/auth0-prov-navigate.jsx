@@ -23,6 +23,7 @@ export const Auth0ProviderWithNavigate = ({ children }) => {
       clientId={clientId}
       authorizationParams={{
         redirect_uri: redirectUri,
+        audience: import.meta.env.VITE_APP_AUTH0_AUDIENCE,
       }}
       onRedirectCallback={onRedirectCallback}
       cacheLocation="localstorage"
