@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router";
 import { Homepage } from "./pages/Homepage";
 import CreatePage from "./pages/CreatePage";
 import NoteDetailPage from "./pages/NoteDetailPage";
+import { RouteGuard } from "./lib/routeGuard";
 
 import "./index.css";
 import Canvas from "./components/Canvas";
@@ -20,8 +21,22 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Homepage />} />
-        <Route path="/create" element={<CreatePage />} />
-        <Route path="/note/:id" element={<NoteDetailPage />} />
+        <Route
+          path="/create"
+          element={
+            <RouteGuard>
+              <CreatePage />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/note/:id"
+          element={
+            <RouteGuard>
+              <NoteDetailPage />
+            </RouteGuard>
+          }
+        />
         {/* <Route path="/callback" element={<CallbackPage />} /> */}
         {/* <Route path="*" element={<NotFoundPage />} /> */}
       </Routes>

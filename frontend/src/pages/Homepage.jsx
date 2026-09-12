@@ -14,11 +14,14 @@ export const Homepage = () => {
   const [rateLimited, setRateLimited] = useState(false);
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { isAuthenticated, user, isLoading } = useAuth0();
+  const { isAuthenticated, user, isLoading: authLoading } = useAuth0();
   const { request } = useAuthenticatedApi();
 
   useEffect(() => {
-    setLoading(true);
+    if (authLoading) {
+      setLoading(true);
+      return;
+    }
 
     if (!isAuthenticated || !user) {
       setLoading(false);
@@ -26,37 +29,34 @@ export const Homepage = () => {
     }
 
     const fetchNotes = async () => {
-      if (isAuthenticated) {
-        try {
-          const res = await request({
-            method: "get",
-            url: `/notes/`,
-          });
+      try {
+        const res = await request({
+          method: "get",
+          url: `/notes/`,
+        });
 
-          setNotes(res.data);
-          setRateLimited(false);
-        } catch (error) {
-          console.log("Error fetching notes: ", error);
-          if (error.response?.status === 429) setRateLimited(true);
-          else toast.error("Error fetching notes, please try again later");
-        } finally {
-          setLoading(false);
-        }
+        setNotes(res.data);
+        setRateLimited(false);
+      } catch (error) {
+        console.log("Error fetching notes: ", error);
+        if (error.response?.status === 429) setRateLimited(true);
+        else toast.error("Error fetching notes, please try again later");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchNotes();
-  }, [isAuthenticated, user]);
+  }, [isAuthenticated, authLoading, user, request]);
 
   return (
     <div>
       {/* <Navbar /> */}
-      {isLoading && (
+      {authLoading ? (
         <div className="text-center text-primary py-10">
           Checking for active session...
         </div>
-      )}
-      {isAuthenticated ? (
+      ) : isAuthenticated ? (
         <>
           {rateLimited && <RateLimitedUI />}
 
