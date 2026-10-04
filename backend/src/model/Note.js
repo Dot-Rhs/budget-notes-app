@@ -2,13 +2,16 @@ import mongoose from "mongoose";
 
 export const noteSchema = new mongoose.Schema(
   {
+    userId: { type: String, required: true, index: true },
     title: {
       type: String,
-      require: true,
+      required: true,
+      maxlength: 200,
     },
     content: {
       type: String,
       required: true,
+      maxlength: 10000,
     },
   },
   { timestamps: true },

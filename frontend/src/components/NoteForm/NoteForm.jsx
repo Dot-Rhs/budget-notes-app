@@ -27,7 +27,6 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
         method: "post",
         url: "/notes/createUserNote",
         data: {
-          userId: user.sub, // Replace with actual user ID
           title: note.title,
           content: note.content,
         },
@@ -97,6 +96,7 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
               onChange={(e) =>
                 setNote((prev) => ({ ...prev, title: e.target.value }))
               }
+              maxLength={200}
             />
           </div>
           <div className="form-control mb-4">
@@ -112,6 +112,7 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
               onChange={(e) =>
                 setNote((prev) => ({ ...prev, content: e.target.value }))
               }
+              maxLength={10000}
             />
           </div>
           <div className="card-actions justify-end">

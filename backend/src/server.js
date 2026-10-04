@@ -7,15 +7,19 @@ import notesRoutes from "./routes/notesRoutes.js";
 import { connectDB } from "./config/db.js";
 import { rateLimiter } from "./middleware/rateLimiter.js";
 import { checkJwt } from "./middleware/auth.js";
+import { envCheck } from "./utils.js";
+import helmet from "helmet";
 
 dotenv.config();
+envCheck();
 const PORT = process.env.PORT || 5001;
 const app = express();
 const __dirname = path.resolve();
 
-app.use(express.json()); // to parse JSON request bodies
+app.use(express.json({ limit: "128kb" })); // to parse JSON request bodies
 
 if (process.env.NODE_ENV !== "production") {
+  app.use(helmet());
   app.use(
     cors({
       origin: "http://localhost:5173", // Adjust this to your frontend URL
@@ -23,11 +27,11 @@ if (process.env.NODE_ENV !== "production") {
   );
 }
 
-app.use(rateLimiter);
-
-app.use("/api/notes", checkJwt, notesRoutes);
+app.use("/api/notes", checkJwt, rateLimiter, notesRoutes);
 
 if (process.env.NODE_ENV === "production") {
+  app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
+  app.set("trust proxy", 1);
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
   app.get("*", (req, res) => {
     res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));

@@ -26,8 +26,9 @@ export const Auth0ProviderWithNavigate = ({ children }) => {
         audience: import.meta.env.VITE_APP_AUTH0_AUDIENCE,
       }}
       onRedirectCallback={onRedirectCallback}
-      cacheLocation="localstorage"
       useRefreshTokens={true}
+      useRefreshTokensFallback={true}
+      cacheLocation={import.meta.env.DEV ? "localstorage" : "memory"}
     >
       {children}
     </Auth0Provider>

@@ -1,22 +1,18 @@
-import Note from "../model/Note.js";
-import User from "../model/User.js";
+import Note, { noteSchema } from "../model/Note.js";
 
 export const getAllNotes = async (req, res) => {
   try {
     const userId = req.auth.payload.sub;
 
-    const notes = await User.findOne({ userId }).populate("notes");
+    const notes = await Note.find({ userId });
 
-    if (!notes?.notes || notes?.notes?.length === 0) {
-      // if (notes === null) {
-      //   await User.create({ userId: req.params.id }, { new: true });
-      // }
+    if (!notes) {
       return res.status(200).json([]);
     }
     console.log("hi::: ", notes);
-    res.status(200).json(notes.notes);
+    res.status(200).json(notes);
   } catch (e) {
-    console.error("Error in getAllNotes2: ", e);
+    console.error("Error in getAllNotes: ", e);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -25,20 +21,19 @@ export const getNote = async (req, res) => {
   try {
     const userId = req.auth.payload.sub;
 
-    const notes = await User.findOne(
-      {
-        userId,
-        "notes._id": req.params.id,
-      },
-      {
-        "notes.$": 1,
-      },
-    );
+    const note = await Note.findOne({
+      userId,
+      _id: req.params.id,
+    });
 
-    console.log("hi::: ", notes);
-    res.status(200).json(notes.notes[0]);
+    console.log("hi::: ", note);
+    if (!note) {
+      return res.status(404).json({ message: "Note not found" });
+    }
+
+    res.status(200).json(note);
   } catch (e) {
-    console.error("Error in getAllNotes2: ", e);
+    console.error("Error in getAllNotes: ", e);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -48,33 +43,16 @@ export const createUserNote = async (req, res) => {
     const { content, title } = req.body;
     const userId = req.auth.payload.sub;
 
-    const newNote = await User.findOneAndUpdate(
-      { userId },
-      { $push: { notes: new Note({ title, content }) } },
-      { new: true, upsert: true, setDefaultsOnInsert: true },
-    );
+    const newNote = new Note({
+      userId,
+      title,
+      content,
+    });
+    await newNote.save();
 
-    if (!newNote) {
-      console.log("BONG");
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.status(201).json({ message: "User Note created!" });
+    res.status(201).json(newNote);
   } catch (e) {
     console.error("Error in createUserNote: ", e);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
-export const createNote = async (req, res) => {
-  try {
-    const { title, content } = req.body;
-    const newNote = new Note({ title, content });
-
-    await newNote.save();
-    res.status(201).json({ message: "Note created!" });
-  } catch (e) {
-    console.error("Error in createNote: ", e);
     res.status(500).json({ message: "Internal server error" });
   }
 };
@@ -84,13 +62,13 @@ export const updateNote = async (req, res) => {
     const { title, content } = req.body;
     const userId = req.auth.payload.sub;
 
-    const noteToUpdate = await User.findOneAndUpdate(
+    const noteToUpdate = await Note.findOneAndUpdate(
       {
         userId,
-        "notes._id": req.params.id,
+        _id: req.params.id,
       },
-      { $set: { "notes.$.title": title, "notes.$.content": content } },
-      { new: true },
+      { $set: { title, content } },
+      { new: true, runValidators: true },
     );
 
     if (!noteToUpdate) {
@@ -107,13 +85,9 @@ export const updateNote = async (req, res) => {
 export const deleteNote = async (req, res) => {
   try {
     const userId = req.auth.payload.sub;
-    const noteToDelete = await User.findOneAndUpdate(
-      { userId },
-      { $pull: { notes: { _id: req.params.id } } },
-      { new: true },
-    );
+    const noteToDelete = await Note.deleteOne({ userId, _id: req.params.id });
 
-    if (!noteToDelete) {
+    if (!noteToDelete.deletedCount) {
       return res.status(404).json({ message: "Note not found" });
     }
 
