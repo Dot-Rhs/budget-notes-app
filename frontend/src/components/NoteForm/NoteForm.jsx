@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router";
-import api from "../../lib/axios";
+import { useAuth0 } from "@auth0/auth0-react";
+import { useAuthenticatedApi } from "../../lib/useAuthenticatedApi";
 
 const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
   const [note, setNote] = useState(currentNote);
   const [saving, setSaving] = useState();
+  const { request } = useAuthenticatedApi();
 
   const navigate = useNavigate();
+  const { user } = useAuth0();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,9 +23,13 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
     setSaving(true);
 
     try {
-      await api.post("/notes", {
-        title: note.title,
-        content: note.content,
+      await request({
+        method: "post",
+        url: "/notes/createUserNote",
+        data: {
+          title: note.title,
+          content: note.content,
+        },
       });
 
       toast.success("Note saved!");
@@ -53,9 +60,13 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
     setSaving(true);
 
     try {
-      await api.put(`/notes/${id}`, {
-        title: note.title,
-        content: note.content,
+      await request({
+        method: "put",
+        url: `/notes/${id}`,
+        data: {
+          title: note.title,
+          content: note.content,
+        },
       });
 
       toast.success("Note updated!");
@@ -85,6 +96,7 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
               onChange={(e) =>
                 setNote((prev) => ({ ...prev, title: e.target.value }))
               }
+              maxLength={200}
             />
           </div>
           <div className="form-control mb-4">
@@ -100,6 +112,7 @@ const NoteForm = ({ currentNote = { title: "", content: "" }, id = null }) => {
               onChange={(e) =>
                 setNote((prev) => ({ ...prev, content: e.target.value }))
               }
+              maxLength={10000}
             />
           </div>
           <div className="card-actions justify-end">

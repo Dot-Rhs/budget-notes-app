@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { PenSquareIcon, Trash2Icon } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import { formatDate } from "../../lib/utils";
-import api from "../../lib/axios";
+import { useAuthenticatedApi } from "../../lib/useAuthenticatedApi";
 import toast from "react-hot-toast";
 import GlobalContext from "../../context/context";
 import ModalDeleteContent from "../Modal/ModalContent";
@@ -10,10 +10,14 @@ import ModalDeleteContent from "../Modal/ModalContent";
 const NoteCard = ({ note, setNotes }) => {
   const { setModalContent } = useContext(GlobalContext);
   const navigate = useNavigate();
+  const { request } = useAuthenticatedApi();
 
   const handleDelete = async (id) => {
     try {
-      await api.delete(`/notes/${id}`);
+      await request({
+        method: "delete",
+        url: `/notes/${id}`,
+      });
 
       setNotes((prevNotes) => prevNotes.filter((note) => note._id !== id));
       toast.success("Note deleted");
