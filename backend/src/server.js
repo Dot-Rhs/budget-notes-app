@@ -53,8 +53,8 @@ if (process.env.NODE_ENV === "production") {
       contentSecurityPolicy: {
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "`https://${process.env.AUTH0_DOMAIN}`"],
-          connectSrc: ["'self'", "`https://${process.env.AUTH0_DOMAIN}`"],
+          scriptSrc: ["'self'", `https://${process.env.AUTH0_DOMAIN}`],
+          connectSrc: ["'self'", `https://${process.env.AUTH0_DOMAIN}`],
           imgSrc: ["'self'", "data:"],
           fontSrc: ["'self'", "data:"],
           styleSrc: ["'self'", "'unsafe-inline'"],
