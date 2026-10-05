@@ -4,9 +4,9 @@ dotenv.config();
 
 const envCheck = () => {
   const requiredVars = {
-    MONGODB_URI: process.env.MONGODB_URI,
+    MONGODB_URI: process.env.MONGOURI,
     AUTH0_AUDIENCE: process.env.AUTH0_AUDIENCE,
-    AUTH0_ISSUER_BASE_URL: process.env.AUTH0_ISSUER_BASE_URL,
+    AUTH0_ISSUER_BASE_URL: process.env.AUTH0_DOMAIN,
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
   };
