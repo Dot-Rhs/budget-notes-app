@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router";
 import { Homepage } from "./pages/Homepage";
 import CreatePage from "./pages/CreatePage";
 import NoteDetailPage from "./pages/NoteDetailPage";
-import { RouteGuard } from "./lib/routeGuard";
+import { RouteGuard } from "./lib/RouteGuard";
 
 import "./index.css";
 import Canvas from "./components/Canvas";
